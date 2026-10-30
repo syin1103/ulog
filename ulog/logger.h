@@ -20,7 +20,34 @@ class Logger {
   Logger(const Logger&) = delete;
   Logger& operator=(const Logger&) = delete;
 
+  const std::string& name() const;
+  level_enum level() const;
+  void set_level(level_enum lvl);
+
+  template <typename... Args>
+  void Trace(const char* fmt, const Args&... args);
+
+  template <typename... Args>
+  void Debug(const char* fmt, const Args&... args);
+
+  template <typename... Args>
+  void Info(const char* fmt, const Args&... args);
+
+  template <typename... Args>
+  void Warn(const char* fmt, const Args&... args);
+
+  template <typename... Args>
+  void Error(const char* fmt, const Args&... args);
+
+  template <typename... Args>
+  void Critical(const char* fmt, const Args&... args);
+
  private:
+  bool ShouldLog(level_enum lvl) const;
+
+  template <typename... Args>
+  void Log(level_enum lvl, const char* fmt, const Args&... args);
+
   std::string name_;
   level_enum level_;
 };
