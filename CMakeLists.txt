@@ -19,6 +19,14 @@ option(BUILD_TESTING "Build unit tests" ON)
 # FetchContent_MakeAvailable(fmt)
 find_package(fmt CONFIG REQUIRED)
 
+add_library(ulog STATIC
+    ulog/logger.cc
+)
+
+target_include_directories(ulog PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(ulog PUBLIC fmt::fmt)
+
+
 if(BUILD_TESTING)
     include(CTest)
     find_package(GTest CONFIG REQUIRED)
@@ -40,12 +48,12 @@ if(BUILD_TESTING)
     foreach(TEST_FILE ${TEST_SOURCES})
         get_filename_component(TEST_NAME ${TEST_FILE} NAME_WE)
         add_executable(${TEST_NAME} ${TEST_FILE})
-        target_link_libraries(${TEST_NAME} PRIVATE GTest::gtest_main)
+        target_link_libraries(${TEST_NAME} PRIVATE ulog GTest::gtest_main)
         add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
     endforeach()
 endif()
 
-if (BUILD_TESTING)
+if (BUILD_EXAMPLE)
     add_executable(example example/example.cc)
-    target_link_libraries(example PRIVATE fmt::fmt)
+    target_link_libraries(example PRIVATE ulog fmt::fmt)
 endif()
