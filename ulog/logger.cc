@@ -8,7 +8,11 @@
 namespace ulog {
 
 Logger::Logger(const std::string& name, level_enum lvl)
-    : name_(name), level_(lvl) {}
+    : name_(name), level_(lvl) {
+  // TODO(syin1103): implement real Formatter and Sink
+  formatter_ = std::make_unique<Formatter>();
+  sinks_.push_back(std::make_unique<sinks::Sink>());
+}
 
 const std::string& Logger::name() const { return name_; }
 
@@ -16,5 +20,12 @@ level_enum Logger::level() const { return level_; };
 void Logger::set_level(level_enum lvl) { level_ = lvl; }
 
 bool Logger::ShouldLog(level_enum lvl) const { return lvl >= level_; }
+
+void Logger::Sink(LogMsg& msg) {
+  formatter_->Format(msg);
+  for (const auto& sink : sinks_) {
+    sink->SinkIt(msg);
+  }
+}
 
 }  // namespace ulog

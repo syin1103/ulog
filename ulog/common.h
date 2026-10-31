@@ -4,9 +4,19 @@
 #ifndef ULOG_COMMON_H_
 #define ULOG_COMMON_H_
 
+#include <memory>
 #include <string>
 
 namespace ulog {
+
+class Formatter;
+
+namespace sinks {
+class Sink;
+}
+
+using FormatterPtr = std::unique_ptr<Formatter>;
+using SinkPtr = std::unique_ptr<sinks::Sink>;
 
 enum class level_enum {
   trace = 0,
@@ -18,6 +28,6 @@ enum class level_enum {
   off = 6
 };
 
-}
+}  // namespace ulog
 
 #endif  // ULOG_COMMON_H_

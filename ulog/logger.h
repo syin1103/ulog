@@ -8,9 +8,12 @@
 
 #include <iterator>
 #include <string>
+#include <vector>
 
 #include "ulog/common.h"
+#include "ulog/formatter.h"
 #include "ulog/log_msg.h"
+#include "ulog/sinks/sink.h"
 
 namespace ulog {
 
@@ -50,8 +53,13 @@ class Logger {
   template <typename... Args>
   void Log(level_enum lvl, const char* fmt, const Args&... args);
 
+  void Sink(LogMsg& msg);
+
   std::string name_;
   level_enum level_;
+
+  FormatterPtr formatter_ = nullptr;
+  std::vector<SinkPtr> sinks_;
 };
 
 template <typename... Args>
@@ -93,9 +101,7 @@ void Logger::Log(level_enum lvl, const char* fmt, const Args&... args) {
   LogMsg log_msg(&name(), lvl);
   fmt::format_to(std::back_inserter(log_msg.raw), fmt, args...);
 
-  // TODO(syin1103): Send the log message to an output destination,
-  // e.g., a file or console.
-  fmt::print("{}", fmt::string_view(log_msg.raw.data(), log_msg.raw.size()));
+  Sink(log_msg);
 }
 
 }  // namespace ulog
