@@ -4,4 +4,10 @@
 #include <gtest/gtest.h>
 #include <ulog/logger.h>
 
-TEST(LoggerTest, basic) { EXPECT_EQ(1 + 1, 2); }
+TEST(LoggerTest, basic) {
+  ulog::Logger logger("test_logger", ulog::level_enum::info);
+
+  logger.Trace("This is a trace message.\n");
+  logger.Info("This is an info message.\n");
+  logger.Error("This is an error message.\n");
+}
