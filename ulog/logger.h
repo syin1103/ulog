@@ -19,13 +19,12 @@ namespace ulog {
 
 class Logger {
  public:
-  Logger(const std::string& name, level_enum lvl);
-  Logger(const std::string& name, level_enum lvl, SinkPtr sink);
-  Logger(const std::string& name, level_enum lvl, SinksInitList sinks);
+  Logger(const std::string& name);
+  Logger(const std::string& name, SinkPtr sink);
+  Logger(const std::string& name, SinksInitList sinks);
 
   template <typename It>
-  Logger(const std::string& name, level_enum lvl, const It& begin,
-         const It& end);
+  Logger(const std::string& name, const It& begin, const It& end);
 
   ~Logger() = default;
 
@@ -70,10 +69,10 @@ class Logger {
 };
 
 template <typename It>
-inline Logger::Logger(const std::string& name, level_enum lvl, const It& begin,
-                      const It& end)
-    : name_(name), level_(lvl), sinks_(begin, end) {
+inline Logger::Logger(const std::string& name, const It& begin, const It& end)
+    : name_(name), sinks_(begin, end) {
   formatter_ = std::make_shared<Formatter>();
+  level_ = level_enum::info;
 }
 
 template <typename... Args>

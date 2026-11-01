@@ -9,8 +9,7 @@ TEST(LoggerTest, basic) {
   ulog::SinkPtr out_sink = ulog::sinks::StdoutSink::Instance();
   ulog::SinkPtr err_sink = ulog::sinks::StderrSink::Instance();
 
-  ulog::Logger logger("TestLogger", ulog::level_enum::info,
-                      {out_sink, err_sink});
+  ulog::Logger logger("TestLogger", {out_sink, err_sink});
 
   logger.Trace("This is a trace message.\n");
   logger.Info("This is an info message.\n");

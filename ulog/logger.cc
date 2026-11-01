@@ -7,14 +7,12 @@
 
 namespace ulog {
 
-Logger::Logger(const std::string& name, level_enum lvl)
-    : name_(name), level_(lvl) {}
+Logger::Logger(const std::string& name) : name_(name) {}
 
-Logger::Logger(const std::string& name, level_enum lvl, SinkPtr sink)
-    : Logger(name, lvl, {sink}) {}
+Logger::Logger(const std::string& name, SinkPtr sink) : Logger(name, {sink}) {}
 
-Logger::Logger(const std::string& name, level_enum lvl, SinksInitList sinks)
-    : Logger(name, lvl, sinks.begin(), sinks.end()) {}
+Logger::Logger(const std::string& name, SinksInitList sinks)
+    : Logger(name, sinks.begin(), sinks.end()) {}
 
 const std::string& Logger::name() const { return name_; }
 
