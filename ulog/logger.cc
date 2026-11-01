@@ -8,11 +8,13 @@
 namespace ulog {
 
 Logger::Logger(const std::string& name, level_enum lvl)
-    : name_(name), level_(lvl) {
-  // TODO(syin1103): implement real Formatter and Sink
-  formatter_ = std::make_unique<Formatter>();
-  sinks_.push_back(std::make_unique<sinks::Sink>());
-}
+    : name_(name), level_(lvl) {}
+
+Logger::Logger(const std::string& name, level_enum lvl, SinkPtr sink)
+    : Logger(name, lvl, {sink}) {}
+
+Logger::Logger(const std::string& name, level_enum lvl, SinksInitList sinks)
+    : Logger(name, lvl, sinks.begin(), sinks.end()) {}
 
 const std::string& Logger::name() const { return name_; }
 

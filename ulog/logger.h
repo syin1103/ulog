@@ -20,6 +20,13 @@ namespace ulog {
 class Logger {
  public:
   Logger(const std::string& name, level_enum lvl);
+  Logger(const std::string& name, level_enum lvl, SinkPtr sink);
+  Logger(const std::string& name, level_enum lvl, SinksInitList sinks);
+
+  template <typename It>
+  Logger(const std::string& name, level_enum lvl, const It& begin,
+         const It& end);
+
   ~Logger() = default;
 
   Logger(const Logger&) = delete;
@@ -61,6 +68,13 @@ class Logger {
   FormatterPtr formatter_ = nullptr;
   std::vector<SinkPtr> sinks_;
 };
+
+template <typename It>
+inline Logger::Logger(const std::string& name, level_enum lvl, const It& begin,
+                      const It& end)
+    : name_(name), level_(lvl), sinks_(begin, end) {
+  formatter_ = std::make_shared<Formatter>();
+}
 
 template <typename... Args>
 inline void Logger::Trace(const char* fmt, const Args&... args) {

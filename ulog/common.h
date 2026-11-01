@@ -4,6 +4,7 @@
 #ifndef ULOG_COMMON_H_
 #define ULOG_COMMON_H_
 
+#include <initializer_list>
 #include <memory>
 #include <string>
 
@@ -15,8 +16,9 @@ namespace sinks {
 class Sink;
 }
 
-using FormatterPtr = std::unique_ptr<Formatter>;
-using SinkPtr = std::unique_ptr<sinks::Sink>;
+using FormatterPtr = std::shared_ptr<Formatter>;
+using SinkPtr = std::shared_ptr<sinks::Sink>;
+using SinksInitList = std::initializer_list<SinkPtr>;
 
 enum class level_enum {
   trace = 0,
