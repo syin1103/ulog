@@ -20,7 +20,7 @@ option(BUILD_TESTING "Build unit tests" ON)
 find_package(fmt CONFIG REQUIRED)
 
 add_library(ulog STATIC
-    ulog/logger.cc
+    ulog/logger.cc ulog/pattern_formatter.cc
 )
 
 target_include_directories(ulog PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

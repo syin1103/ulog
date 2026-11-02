@@ -4,9 +4,9 @@
 #ifndef ULOG_FORMATTER_H_
 #define ULOG_FORMATTER_H_
 
-#include "ulog/log_msg.h"
-
 namespace ulog {
+
+class LogMsg;
 
 class Formatter {
  public:
@@ -16,14 +16,8 @@ class Formatter {
   Formatter(const Formatter&) = delete;
   Formatter& operator=(const Formatter&) = delete;
 
-  virtual void Format(LogMsg& msg);
+  virtual void Format(LogMsg& msg) = 0;
 };
-
-inline void Formatter::Format(LogMsg& msg) {
-  // TODO(syin1103): Implement formatting logic
-  fmt::format_to(std::back_inserter(msg.formatted), "[TODO]: {}",
-                 fmt::string_view(msg.raw.data(), msg.raw.size()));
-}
 
 }  // namespace ulog
 

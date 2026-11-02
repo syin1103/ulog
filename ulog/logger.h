@@ -11,8 +11,8 @@
 #include <vector>
 
 #include "ulog/common.h"
-#include "ulog/formatter.h"
 #include "ulog/log_msg.h"
+#include "ulog/pattern_formatter.h"
 #include "ulog/sinks/sink.h"
 
 namespace ulog {
@@ -71,7 +71,7 @@ class Logger {
 template <typename It>
 inline Logger::Logger(const std::string& name, const It& begin, const It& end)
     : name_(name), sinks_(begin, end) {
-  formatter_ = std::make_shared<Formatter>();
+  formatter_ = std::make_shared<PatternFormatter>("%t");
   level_ = level_enum::info;
 }
 
