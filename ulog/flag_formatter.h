@@ -4,6 +4,9 @@
 #ifndef ULOG_FLAG_FORMATTER_H_
 #define ULOG_FLAG_FORMATTER_H_
 
+#include <fmt/format.h>
+#include <ulog/log_msg.h>
+
 namespace ulog {
 
 class FlagFormatter {
@@ -21,19 +24,26 @@ namespace details {
 // logger name: %n
 class NameFormatter : public FlagFormatter {
  public:
-  void Format(LogMsg& msg) override {}
+  void Format(LogMsg& msg) override {
+    fmt::format_to(std::back_inserter(msg.formatted), "{}", *msg.logger_name);
+  }
 };
 
 // log level: %l
 class LevelFormatter : public FlagFormatter {
  public:
-  void Format(LogMsg& msg) override {}
+  void Format(LogMsg& msg) override {
+    fmt::format_to(std::back_inserter(msg.formatted), "{}",
+                   static_cast<int>(msg.level));
+  }
 };
 
 // thread id formatter : %t
 class ThreadIdFormatter : public FlagFormatter {
  public:
-  void Format(LogMsg& msg) override {}
+  void Format(LogMsg& msg) override {
+    fmt::format_to(std::back_inserter(msg.formatted), "{}", msg.thread_id);
+  }
 };
 
 // year formatter: %Y
@@ -57,7 +67,10 @@ class DayFormatter : public FlagFormatter {
 // message formatter: %v
 class MessageFormatter : public FlagFormatter {
  public:
-  void Format(LogMsg& msg) override {}
+  void Format(LogMsg& msg) override {
+    fmt::format_to(std::back_inserter(msg.formatted), "{}",
+                   fmt::string_view(msg.raw.data(), msg.raw.size()));
+  }
 };
 
 // aggregate user char to display
