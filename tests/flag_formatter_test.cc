@@ -11,6 +11,10 @@ using ulog::LogMsg;
 using ulog::details::LevelFormatter;
 using ulog::details::NameFormatter;
 
+/*
+ * TODO(syin1103): refact flag formatter unit tests
+ */
+
 TEST(NameFormatterTest, basic) {
   const std::string name = "test_logger";
 
@@ -50,4 +54,53 @@ TEST(ThreadIdFormatterTest, basic) {
   ulog::details::ThreadIdFormatter thread_id_formatter;
   thread_id_formatter.Format(msg);
   EXPECT_EQ(fmt::to_string(msg.formatted), std::to_string(msg.thread_id));
+}
+TEST(AggregateFormatterTest, basic) {
+  const std::string name = "test_logger";
+
+  LogMsg msg(&name, ulog::level_enum::info);
+
+  ulog::details::AggregateFormatter agg_formatter;
+  std::string str = "prefix";
+  for (const auto& ch : str) {
+    agg_formatter.AddChar(ch);
+  }
+
+  agg_formatter.Format(msg);
+  EXPECT_EQ(fmt::to_string(msg.formatted), "prefix");
+}
+
+class DateFormatterTest : public ::testing::Test {
+ protected:
+  std::string name_ = "test_logger";
+  LogMsg msg{&name_, ulog::level_enum::info};
+
+  void SetUp() override {
+    std::tm tm{};
+    tm.tm_year = 2026 - 1900;
+    tm.tm_mon = 10;
+    tm.tm_mday = 3;
+    tm.tm_isdst = -1;
+
+    auto timestamp = std::mktime(&tm);
+    msg.time = std::chrono::system_clock::from_time_t(timestamp);
+  }
+};
+
+TEST_F(DateFormatterTest, FormatYear) {
+  ulog::details::YearFormatter formatter;
+  formatter.Format(msg);
+  EXPECT_EQ(fmt::to_string(msg.formatted), "2026");
+}
+
+TEST_F(DateFormatterTest, FormatMonth) {
+  ulog::details::MonthFormatter formatter;
+  formatter.Format(msg);
+  EXPECT_EQ(fmt::to_string(msg.formatted), "11");
+}
+
+TEST_F(DateFormatterTest, FormatDay) {
+  ulog::details::DayFormatter formatter;
+  formatter.Format(msg);
+  EXPECT_EQ(fmt::to_string(msg.formatted), "03");
 }

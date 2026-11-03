@@ -16,7 +16,7 @@ class FlagFormatter;
 
 class PatternFormatter : public Formatter {
  public:
-  PatternFormatter(const std::string& pattern);
+  explicit PatternFormatter(const std::string& pattern);
   ~PatternFormatter() override;
 
   virtual void Format(LogMsg& msg) override;

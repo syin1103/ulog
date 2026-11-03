@@ -6,6 +6,7 @@
 
 #include <fmt/format.h>
 
+#include <chrono>
 #include <string>
 
 #include "ulog/common.h"
@@ -17,6 +18,7 @@ struct LogMsg {
   LogMsg(const std::string* name, level_enum lvl)
       : logger_name(name), level(lvl) {
     thread_id = os::GetThreadId();
+    time = os::GetLocalTime();
   }
 
   LogMsg(const LogMsg&) = delete;
@@ -25,6 +27,7 @@ struct LogMsg {
   const std::string* logger_name;
   level_enum level;
   uint64_t thread_id;
+  std::chrono::system_clock::time_point time;
 
   fmt::memory_buffer raw;
   fmt::memory_buffer formatted;

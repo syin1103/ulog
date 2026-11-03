@@ -19,7 +19,7 @@ namespace ulog {
 
 class Logger {
  public:
-  Logger(const std::string& name);
+  explicit Logger(const std::string& name);
   Logger(const std::string& name, SinkPtr sink);
   Logger(const std::string& name, SinksInitList sinks);
 

@@ -45,6 +45,16 @@ uint64_t GetThreadId() {
 #endif
 }
 
+std::chrono::system_clock::time_point GetLocalTime() {
+  // TODO(syin1103): Optimize Linux clock access （CLOCK_REALTIME_COARSE）
+  return std::chrono::system_clock::now();
+}
+
+std::tm ToLocalTime(const std::chrono::system_clock::time_point& time_point) {
+  auto time_t = std::chrono::system_clock::to_time_t(time_point);
+  return *std::localtime(&time_t);  // not thread safe
+}
+
 }  // namespace os
 }  // namespace ulog
 
