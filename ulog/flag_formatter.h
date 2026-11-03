@@ -4,16 +4,14 @@
 #ifndef ULOG_FLAG_FORMATTER_H_
 #define ULOG_FLAG_FORMATTER_H_
 
-#include "ulog/formatter.h"
-
 namespace ulog {
 
-class FlagFormatter : public Formatter {
+class FlagFormatter {
  public:
   FlagFormatter() = default;
   virtual ~FlagFormatter() = default;
 
-  void Format(LogMsg& msg) override {}
+  virtual void Format(LogMsg& msg) = 0;
 
  private:
 };
