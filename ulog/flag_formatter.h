@@ -95,6 +95,19 @@ class LiteralFormatter : public FlagFormatter {
   std::string str_ = "";
 };
 
+// full formatter: %+, [%Y-%m-%d][%n][%l] %v
+class FullFormatter : public FlagFormatter {
+ public:
+  void Format(LogMsg& msg) override {
+    const auto tm = os::ToLocalTime(msg.time);
+    fmt::format_to(std::back_inserter(msg.formatted),
+                   "[{:04d}-{:02d}-{:02d}][{}][{}] {}", tm.tm_year + 1900,
+                   tm.tm_mon + 1, tm.tm_mday, *msg.logger_name,
+                   ToLevelString(msg.level),
+                   fmt::string_view(msg.raw.data(), msg.raw.size()));
+  }
+};
+
 }  // namespace details
 
 }  // namespace ulog

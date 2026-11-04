@@ -104,3 +104,9 @@ TEST_F(DateFormatterTest, FormatDay) {
   formatter.Format(msg);
   EXPECT_EQ(fmt::to_string(msg.formatted), "03");
 }
+
+TEST_F(DateFormatterTest, Format) {
+  ulog::details::FullFormatter formatter;
+  formatter.Format(msg);
+  EXPECT_EQ(fmt::to_string(msg.formatted), "[2026-11-03][test_logger][info] ");
+}

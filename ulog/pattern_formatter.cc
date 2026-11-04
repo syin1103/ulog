@@ -3,7 +3,6 @@
 
 #include "ulog/pattern_formatter.h"
 
-#include <cassert>
 #include <stdexcept>
 
 #include "ulog/flag_formatter.h"
@@ -23,9 +22,6 @@ void PatternFormatter::Format(LogMsg& msg) {
     formatter->Format(msg);
   }
   fmt::format_to(std::back_inserter(msg.formatted), "{}", "\n");
-  // TODO(syin1103): just for test
-  // fmt::format_to(std::back_inserter(msg.formatted), "[TODO]: {}",
-  //                fmt::string_view(msg.raw.data(), msg.raw.size()));
 }
 
 void PatternFormatter::Compile(const std::string& pattern) {
@@ -84,6 +80,9 @@ void PatternFormatter::HandleFlag(char ch) {
       break;
     case 'v':
       flag_formatters_.push_back(std::make_unique<details::MessageFormatter>());
+      break;
+    case '+':
+      flag_formatters_.push_back(std::make_unique<details::FullFormatter>());
       break;
     default:
       throw std::runtime_error(fmt::format("invalid flag after'%{}'", ch));

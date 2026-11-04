@@ -104,4 +104,5 @@ INSTANTIATE_TEST_SUITE_P(
         std::make_pair("%n%l", "test_loggerinfo\n"),
         std::make_pair("%%%%", "%%\n"), std::make_pair("abc%%def", "abc%def\n"),
         std::make_pair("%n%% %l", "test_logger% info\n"),
-        std::make_pair("a%n-b%l-c%v", "atest_logger-binfo-cHello World\n")));
+        std::make_pair("a%n-b%l-c%v", "atest_logger-binfo-cHello World\n"),
+        std::make_pair("%+", "[2026-11-03][test_logger][info] Hello World\n")));

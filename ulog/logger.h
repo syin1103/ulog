@@ -4,12 +4,6 @@
 #ifndef ULOG_LOGGER_H_
 #define ULOG_LOGGER_H_
 
-#include <fmt/format.h>
-
-#include <iterator>
-#include <string>
-#include <vector>
-
 #include "ulog/common.h"
 #include "ulog/log_msg.h"
 #include "ulog/pattern_formatter.h"
@@ -71,7 +65,7 @@ class Logger {
 template <typename It>
 inline Logger::Logger(const std::string& name, const It& begin, const It& end)
     : name_(name), sinks_(begin, end) {
-  formatter_ = std::make_shared<PatternFormatter>("%t");
+  formatter_ = std::make_shared<PatternFormatter>("%+");
   level_ = level_enum::info;
 }
 
