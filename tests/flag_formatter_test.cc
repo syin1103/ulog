@@ -33,7 +33,7 @@ TEST(LevelFormatterTest, basic) {
   LevelFormatter lvl_formatter;
   lvl_formatter.Format(msg);
   EXPECT_EQ(fmt::to_string(msg.formatted),
-            std::to_string(static_cast<int>(ulog::level_enum::info)));
+            ToLevelString(ulog::level_enum::info));
 }
 
 TEST(MessageFormatterTest, basic) {

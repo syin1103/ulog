@@ -27,7 +27,9 @@
 namespace ulog {
 namespace os {
 
-uint64_t GetThreadId() {
+using ulog_clock = std::chrono::system_clock;
+
+inline uint64_t GetThreadId() {
 #if defined(_WIN32)
   return static_cast<uint64_t>(::GetCurrentThreadId());
 #elif defined(__APPLE__)
@@ -45,13 +47,13 @@ uint64_t GetThreadId() {
 #endif
 }
 
-std::chrono::system_clock::time_point GetLocalTime() {
+inline ulog_clock::time_point GetLocalTime() {
   // TODO(syin1103): Optimize Linux clock access （CLOCK_REALTIME_COARSE）
-  return std::chrono::system_clock::now();
+  return ulog_clock::now();
 }
 
-std::tm ToLocalTime(const std::chrono::system_clock::time_point& time_point) {
-  auto time_t = std::chrono::system_clock::to_time_t(time_point);
+inline std::tm ToLocalTime(const ulog_clock::time_point& time_point) {
+  auto time_t = ulog_clock::to_time_t(time_point);
   return *std::localtime(&time_t);  // not thread safe
 }
 

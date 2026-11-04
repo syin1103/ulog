@@ -15,8 +15,6 @@ class FlagFormatter {
   virtual ~FlagFormatter() = default;
 
   virtual void Format(LogMsg& msg) = 0;
-
- private:
 };
 
 namespace details {
@@ -34,7 +32,7 @@ class LevelFormatter : public FlagFormatter {
  public:
   void Format(LogMsg& msg) override {
     fmt::format_to(std::back_inserter(msg.formatted), "{}",
-                   static_cast<int>(msg.level));
+                   ToLevelString(msg.level));
   }
 };
 

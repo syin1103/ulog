@@ -30,6 +30,13 @@ enum class level_enum {
   off = 6
 };
 
+static const char* level_list[]{"trace", "debug",    "info", "warn",
+                                "error", "critical", "off"};
+
+inline const char* ToLevelString(level_enum lvl) {
+  return level_list[static_cast<int>(lvl)];
+}
+
 }  // namespace ulog
 
 #endif  // ULOG_COMMON_H_

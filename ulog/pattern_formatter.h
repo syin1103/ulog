@@ -22,7 +22,8 @@ class PatternFormatter : public Formatter {
   virtual void Format(LogMsg& msg) override;
 
  private:
-  void Compile(const std::string& pattern) {}
+  void Compile(const std::string& pattern);
+  void HandleFlag(char ch);
 
   std::string pattern_;
   std::vector<std::unique_ptr<FlagFormatter>> flag_formatters_;
