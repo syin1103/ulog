@@ -55,18 +55,18 @@ TEST(ThreadIdFormatterTest, basic) {
   thread_id_formatter.Format(msg);
   EXPECT_EQ(fmt::to_string(msg.formatted), std::to_string(msg.thread_id));
 }
-TEST(AggregateFormatterTest, basic) {
+TEST(LiteralFormatterTest, basic) {
   const std::string name = "test_logger";
 
   LogMsg msg(&name, ulog::level_enum::info);
 
-  ulog::details::AggregateFormatter agg_formatter;
+  ulog::details::LiteralFormatter literal_formatter;
   std::string str = "prefix";
   for (const auto& ch : str) {
-    agg_formatter.AddChar(ch);
+    literal_formatter.AddChar(ch);
   }
 
-  agg_formatter.Format(msg);
+  literal_formatter.Format(msg);
   EXPECT_EQ(fmt::to_string(msg.formatted), "prefix");
 }
 

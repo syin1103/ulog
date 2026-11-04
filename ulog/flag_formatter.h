@@ -84,8 +84,8 @@ class MessageFormatter : public FlagFormatter {
   }
 };
 
-// aggregate user char to display
-class AggregateFormatter : public FlagFormatter {
+// aggregate user literal char to display
+class LiteralFormatter : public FlagFormatter {
  public:
   void Format(LogMsg& msg) override {
     fmt::format_to(std::back_inserter(msg.formatted), "{}", str_);
