@@ -13,8 +13,7 @@ class FlagFormatter {
  public:
   FlagFormatter() = default;
   virtual ~FlagFormatter() = default;
-
-  virtual void Format(LogMsg& msg) = 0;
+  virtual void Format(LogMsg& msg, const std::tm& tm) = 0;
 };
 
 namespace details {
@@ -22,7 +21,7 @@ namespace details {
 // logger name: %n
 class NameFormatter : public FlagFormatter {
  public:
-  void Format(LogMsg& msg) override {
+  void Format(LogMsg& msg, const std::tm& tm) override {
     fmt::format_to(std::back_inserter(msg.formatted), "{}", *msg.logger_name);
   }
 };
@@ -30,7 +29,7 @@ class NameFormatter : public FlagFormatter {
 // log level: %l
 class LevelFormatter : public FlagFormatter {
  public:
-  void Format(LogMsg& msg) override {
+  void Format(LogMsg& msg, const std::tm& tm) override {
     fmt::format_to(std::back_inserter(msg.formatted), "{}",
                    ToLevelString(msg.level));
   }
@@ -39,7 +38,7 @@ class LevelFormatter : public FlagFormatter {
 // thread id formatter : %t
 class ThreadIdFormatter : public FlagFormatter {
  public:
-  void Format(LogMsg& msg) override {
+  void Format(LogMsg& msg, const std::tm& tm) override {
     fmt::format_to(std::back_inserter(msg.formatted), "{}", msg.thread_id);
   }
 };
@@ -47,9 +46,7 @@ class ThreadIdFormatter : public FlagFormatter {
 // year formatter: %Y
 class YearFormatter : public FlagFormatter {
  public:
-  void Format(LogMsg& msg) override {
-    // TODO(syin1103): optimize, avoid redundant calls to ToLocalTime
-    const auto tm = os::ToLocalTime(msg.time);
+  void Format(LogMsg& msg, const std::tm& tm) override {
     fmt::format_to(std::back_inserter(msg.formatted), "{:04d}",
                    tm.tm_year + 1900);
   }
@@ -58,8 +55,7 @@ class YearFormatter : public FlagFormatter {
 // month formatter: %m
 class MonthFormatter : public FlagFormatter {
  public:
-  void Format(LogMsg& msg) override {
-    const auto tm = os::ToLocalTime(msg.time);
+  void Format(LogMsg& msg, const std::tm& tm) override {
     fmt::format_to(std::back_inserter(msg.formatted), "{:02d}", tm.tm_mon + 1);
   }
 };
@@ -67,8 +63,7 @@ class MonthFormatter : public FlagFormatter {
 // day formatter: %d
 class DayFormatter : public FlagFormatter {
  public:
-  void Format(LogMsg& msg) override {
-    const auto tm = os::ToLocalTime(msg.time);
+  void Format(LogMsg& msg, const std::tm& tm) override {
     fmt::format_to(std::back_inserter(msg.formatted), "{:02d}", tm.tm_mday);
   }
 };
@@ -76,7 +71,7 @@ class DayFormatter : public FlagFormatter {
 // message formatter: %v
 class MessageFormatter : public FlagFormatter {
  public:
-  void Format(LogMsg& msg) override {
+  void Format(LogMsg& msg, const std::tm& tm) override {
     fmt::format_to(std::back_inserter(msg.formatted), "{}",
                    fmt::string_view(msg.raw.data(), msg.raw.size()));
   }
@@ -85,7 +80,7 @@ class MessageFormatter : public FlagFormatter {
 // aggregate user literal char to display
 class LiteralFormatter : public FlagFormatter {
  public:
-  void Format(LogMsg& msg) override {
+  void Format(LogMsg& msg, const std::tm& tm) override {
     fmt::format_to(std::back_inserter(msg.formatted), "{}", str_);
   }
 
@@ -98,8 +93,7 @@ class LiteralFormatter : public FlagFormatter {
 // full formatter: %+, [%Y-%m-%d][%n][%l] %v
 class FullFormatter : public FlagFormatter {
  public:
-  void Format(LogMsg& msg) override {
-    const auto tm = os::ToLocalTime(msg.time);
+  void Format(LogMsg& msg, const std::tm& tm) override {
     fmt::format_to(std::back_inserter(msg.formatted),
                    "[{:04d}-{:02d}-{:02d}][{}][{}] {}", tm.tm_year + 1900,
                    tm.tm_mon + 1, tm.tm_mday, *msg.logger_name,
@@ -109,7 +103,6 @@ class FullFormatter : public FlagFormatter {
 };
 
 }  // namespace details
-
 }  // namespace ulog
 
 #endif  // ULOG_FLAG_FORMATTER_H_

@@ -18,8 +18,9 @@ PatternFormatter::PatternFormatter(const std::string& pattern)
 PatternFormatter::~PatternFormatter() = default;
 
 void PatternFormatter::Format(LogMsg& msg) {
+  std::tm tm = os::ToLocalTime(msg.time);
   for (const auto& formatter : flag_formatters_) {
-    formatter->Format(msg);
+    formatter->Format(msg, tm);
   }
   fmt::format_to(std::back_inserter(msg.formatted), "{}", "\n");
 }

@@ -6,6 +6,7 @@
 #include <gtest/gtest.h>
 
 #include "ulog/log_msg.h"
+#include "ulog/os.h"
 
 using ulog::LogMsg;
 using ulog::details::LevelFormatter;
@@ -19,9 +20,10 @@ TEST(NameFormatterTest, basic) {
   const std::string name = "test_logger";
 
   LogMsg msg(&name, ulog::level_enum::info);
+  std::tm tm = ulog::os::ToLocalTime(msg.time);
 
   NameFormatter name_formatter;
-  name_formatter.Format(msg);
+  name_formatter.Format(msg, tm);
 
   EXPECT_EQ(fmt::to_string(msg.formatted), "test_logger");
 }
@@ -29,9 +31,10 @@ TEST(NameFormatterTest, basic) {
 TEST(LevelFormatterTest, basic) {
   const std::string name = "test_logger";
   LogMsg msg(&name, ulog::level_enum::info);
+  std::tm tm = ulog::os::ToLocalTime(msg.time);
 
   LevelFormatter lvl_formatter;
-  lvl_formatter.Format(msg);
+  lvl_formatter.Format(msg, tm);
   EXPECT_EQ(fmt::to_string(msg.formatted),
             ToLevelString(ulog::level_enum::info));
 }
@@ -39,20 +42,22 @@ TEST(LevelFormatterTest, basic) {
 TEST(MessageFormatterTest, basic) {
   const std::string name = "test_logger";
   LogMsg msg(&name, ulog::level_enum::info);
+  std::tm tm = ulog::os::ToLocalTime(msg.time);
 
   fmt::format_to(std::back_inserter(msg.raw), "{}", "This is a test message.");
 
   ulog::details::MessageFormatter msg_formatter;
-  msg_formatter.Format(msg);
+  msg_formatter.Format(msg, tm);
   EXPECT_EQ(fmt::to_string(msg.formatted), "This is a test message.");
 }
 
 TEST(ThreadIdFormatterTest, basic) {
   const std::string name = "test_logger";
   LogMsg msg(&name, ulog::level_enum::info);
+  std::tm tm = ulog::os::ToLocalTime(msg.time);
 
   ulog::details::ThreadIdFormatter thread_id_formatter;
-  thread_id_formatter.Format(msg);
+  thread_id_formatter.Format(msg, tm);
   EXPECT_EQ(fmt::to_string(msg.formatted), std::to_string(msg.thread_id));
 }
 TEST(LiteralFormatterTest, basic) {
@@ -66,7 +71,8 @@ TEST(LiteralFormatterTest, basic) {
     literal_formatter.AddChar(ch);
   }
 
-  literal_formatter.Format(msg);
+  std::tm tm = ulog::os::ToLocalTime(msg.time);
+  literal_formatter.Format(msg, tm);
   EXPECT_EQ(fmt::to_string(msg.formatted), "prefix");
 }
 
@@ -74,6 +80,7 @@ class DateFormatterTest : public ::testing::Test {
  protected:
   std::string name_ = "test_logger";
   LogMsg msg{&name_, ulog::level_enum::info};
+  std::tm tm_;
 
   void SetUp() override {
     std::tm tm{};
@@ -84,29 +91,30 @@ class DateFormatterTest : public ::testing::Test {
 
     auto timestamp = std::mktime(&tm);
     msg.time = std::chrono::system_clock::from_time_t(timestamp);
+    tm_ = ulog::os::ToLocalTime(msg.time);
   }
 };
 
 TEST_F(DateFormatterTest, FormatYear) {
   ulog::details::YearFormatter formatter;
-  formatter.Format(msg);
+  formatter.Format(msg, tm_);
   EXPECT_EQ(fmt::to_string(msg.formatted), "2026");
 }
 
 TEST_F(DateFormatterTest, FormatMonth) {
   ulog::details::MonthFormatter formatter;
-  formatter.Format(msg);
+  formatter.Format(msg, tm_);
   EXPECT_EQ(fmt::to_string(msg.formatted), "11");
 }
 
 TEST_F(DateFormatterTest, FormatDay) {
   ulog::details::DayFormatter formatter;
-  formatter.Format(msg);
+  formatter.Format(msg, tm_);
   EXPECT_EQ(fmt::to_string(msg.formatted), "03");
 }
 
 TEST_F(DateFormatterTest, Format) {
   ulog::details::FullFormatter formatter;
-  formatter.Format(msg);
+  formatter.Format(msg, tm_);
   EXPECT_EQ(fmt::to_string(msg.formatted), "[2026-11-03][test_logger][info] ");
 }
