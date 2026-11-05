@@ -20,7 +20,7 @@ TEST(LoggerTest, basic) {
 
   ulog::Logger logger("TestLogger", {out_sink, err_sink, file_sink});
 
-  logger.Trace("This is a trace message.\n");
-  logger.Info("This is an info message.\n");
-  logger.Error("This is an error message.\n");
+  logger.Trace("This is a trace message.");
+  logger.Info("This is an info message.");
+  logger.Error("This is an error message.");
 }

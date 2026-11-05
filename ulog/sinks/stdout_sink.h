@@ -24,6 +24,8 @@ class StdoutSink : public Sink {
     return instance;
   }
 
+  void Flush() override { std::fflush(stdout); }
+
  private:
   virtual void SinkIt(const LogMsg& msg) override {
     std::fwrite(msg.formatted.data(), sizeof(char), msg.formatted.size(),
@@ -43,6 +45,8 @@ class StderrSink : public Sink {
     static SelfPtr instance = std::make_shared<StderrSink>();
     return instance;
   }
+
+  void Flush() override { std::fflush(stderr); }
 
  private:
   virtual void SinkIt(const LogMsg& msg) override {

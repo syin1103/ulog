@@ -21,6 +21,18 @@ void Logger::set_level(level_enum lvl) { level_ = lvl; }
 
 bool Logger::ShouldLog(level_enum lvl) const { return lvl >= level_; }
 
+void Logger::SetPattern(const std::string& pattern) {
+  formatter_ = std::make_shared<PatternFormatter>(pattern);
+}
+
+void Logger::set_formatter(FormatterPtr formatter) { formatter_ = formatter; }
+
+void Logger::Flush() {
+  for (auto& sink : sinks_) {
+    sink->Flush();
+  }
+}
+
 void Logger::Sink(LogMsg& msg) {
   formatter_->Format(msg);
   for (const auto& sink : sinks_) {

@@ -4,10 +4,6 @@
 #ifndef ULOG_SINKS_SINK_H_
 #define ULOG_SINKS_SINK_H_
 
-#include <fmt/format.h>
-
-#include <string>
-
 #include "ulog/log_msg.h"
 
 namespace ulog {
@@ -21,14 +17,9 @@ class Sink {
   Sink(const Sink&) = delete;
   Sink& operator=(const Sink&) = delete;
 
-  virtual void SinkIt(const LogMsg& msg);
+  virtual void SinkIt(const LogMsg& msg) = 0;
+  virtual void Flush() = 0;
 };
-
-inline void Sink::SinkIt(const LogMsg& msg) {
-  // TODO(syin1103): Implement sink logic
-  fmt::print("{}",
-             fmt::string_view(msg.formatted.data(), msg.formatted.size()));
-}
 
 }  // namespace sinks
 }  // namespace ulog

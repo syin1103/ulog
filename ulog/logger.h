@@ -47,6 +47,11 @@ class Logger {
   template <typename... Args>
   void Critical(const char* fmt, const Args&... args);
 
+  void SetPattern(const std::string& pattern);
+  void set_formatter(FormatterPtr formatter);
+
+  void Flush();
+
  private:
   bool ShouldLog(level_enum lvl) const;
 

@@ -26,6 +26,7 @@ class FileSink : public Sink {
   FileSink& operator=(const FileSink&) = delete;
 
   void SinkIt(const LogMsg& msg) override;
+  void Flush() override;
 
  private:
   std::string filename_;
@@ -42,6 +43,12 @@ inline FileSink::FileSink(const std::string& filename) : filename_(filename) {
 inline void FileSink::SinkIt(const LogMsg& msg) {
   assert(file_);
   std::fwrite(msg.formatted.data(), sizeof(char), msg.formatted.size(), file_);
+}
+
+inline void FileSink::Flush() {
+  if (file_) {
+    std::fflush(file_);
+  }
 }
 
 }  // namespace sinks
