@@ -4,6 +4,7 @@
 #ifndef ULOG_COMMON_H_
 #define ULOG_COMMON_H_
 
+#include <atomic>
 #include <initializer_list>
 #include <memory>
 #include <string>
@@ -19,6 +20,8 @@ class Sink;
 using FormatterPtr = std::shared_ptr<Formatter>;
 using SinkPtr = std::shared_ptr<sinks::Sink>;
 using SinksInitList = std::initializer_list<SinkPtr>;
+
+using level_t = std::atomic_int;
 
 enum class level_enum {
   trace = 0,
