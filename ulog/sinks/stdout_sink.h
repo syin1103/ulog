@@ -7,20 +7,21 @@
 #include <cstdio>
 #include <memory>
 
-#include "ulog/sinks/sink.h"
+#include "ulog/sinks/base_sink.h"
 
 namespace ulog {
 namespace sinks {
 
-class StdoutSink : public Sink {
-  using SelfPtr = std::shared_ptr<StdoutSink>;
+template <typename Mutex>
+class StdoutSink : public BaseSink<Mutex> {
+  using SelfPtr = std::shared_ptr<StdoutSink<Mutex>>;
 
  public:
   StdoutSink() = default;
   virtual ~StdoutSink() = default;
 
   static std::shared_ptr<StdoutSink> Instance() {
-    static SelfPtr instance = std::make_shared<StdoutSink>();
+    static SelfPtr instance = std::make_shared<StdoutSink<Mutex>>();
     return instance;
   }
 
@@ -34,15 +35,16 @@ class StdoutSink : public Sink {
   }
 };
 
-class StderrSink : public Sink {
-  using SelfPtr = std::shared_ptr<StderrSink>;
+template <typename Mutex>
+class StderrSink : public BaseSink<Mutex> {
+  using SelfPtr = std::shared_ptr<StderrSink<Mutex>>;
 
  public:
   StderrSink() = default;
   virtual ~StderrSink() = default;
 
   static std::shared_ptr<StderrSink> Instance() {
-    static SelfPtr instance = std::make_shared<StderrSink>();
+    static SelfPtr instance = std::make_shared<StderrSink<Mutex>>();
     return instance;
   }
 

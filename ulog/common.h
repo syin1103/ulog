@@ -40,6 +40,16 @@ inline const char* ToLevelString(level_enum lvl) {
   return level_list[static_cast<int>(lvl)];
 }
 
+namespace details {
+
+struct null_mutex {
+  void lock() {}
+  void unlock() {}
+  bool try_lock() { return true; }
+};
+
+}  // namespace details
+
 }  // namespace ulog
 
 #endif  // ULOG_COMMON_H_

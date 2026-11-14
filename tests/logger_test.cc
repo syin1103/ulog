@@ -7,6 +7,7 @@
 #include <ulog/sinks/stdout_sink.h>
 
 #include <memory>
+#include <mutex>
 
 using ulog::SinkPtr;
 using ulog::sinks::FileSink;
@@ -14,9 +15,9 @@ using ulog::sinks::StderrSink;
 using ulog::sinks::StdoutSink;
 
 TEST(LoggerTest, basic) {
-  SinkPtr out_sink = StdoutSink::Instance();
-  SinkPtr err_sink = StderrSink::Instance();
-  SinkPtr file_sink = std::make_shared<FileSink>("logger_test.log");
+  SinkPtr out_sink = StdoutSink<std::mutex>::Instance();
+  SinkPtr err_sink = StderrSink<std::mutex>::Instance();
+  SinkPtr file_sink = std::make_shared<FileSink<std::mutex>>("logger_test.log");
 
   ulog::Logger logger("TestLogger", {out_sink, err_sink, file_sink});
 

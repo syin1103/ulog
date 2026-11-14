@@ -8,12 +8,13 @@
 #include <cstdio>
 #include <string>
 
-#include "ulog/sinks/sink.h"
+#include "ulog/sinks/base_sink.h"
 
 namespace ulog {
 namespace sinks {
 
-class FileSink : public Sink {
+template <typename Mutex>
+class FileSink : public BaseSink<Mutex> {
  public:
   explicit FileSink(const std::string& filename);
   virtual ~FileSink() {
@@ -25,27 +26,31 @@ class FileSink : public Sink {
   FileSink(const FileSink&) = delete;
   FileSink& operator=(const FileSink&) = delete;
 
-  void SinkIt(const LogMsg& msg) override;
   void Flush() override;
 
  private:
+  void SinkIt(const LogMsg& msg) override;
   std::string filename_;
   FILE* file_ = nullptr;
 };
 
-inline FileSink::FileSink(const std::string& filename) : filename_(filename) {
+template <typename Mutex>
+inline FileSink<Mutex>::FileSink(const std::string& filename)
+    : filename_(filename) {
   file_ = fopen(filename.c_str(), "a");
   if (!file_) {
     throw std::runtime_error("Failed to open log file");
   }
 }
 
-inline void FileSink::SinkIt(const LogMsg& msg) {
+template <typename Mutex>
+inline void FileSink<Mutex>::SinkIt(const LogMsg& msg) {
   assert(file_);
   std::fwrite(msg.formatted.data(), sizeof(char), msg.formatted.size(), file_);
 }
 
-inline void FileSink::Flush() {
+template <typename Mutex>
+inline void FileSink<Mutex>::Flush() {
   if (file_) {
     std::fflush(file_);
   }

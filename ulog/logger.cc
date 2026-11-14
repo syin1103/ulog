@@ -41,7 +41,8 @@ void Logger::Flush() {
 void Logger::Sink(LogMsg& msg) {
   formatter_->Format(msg);
   for (const auto& sink : sinks_) {
-    sink->SinkIt(msg);
+    // sink->SinkIt(msg);
+    sink->Log(msg);
   }
 }
 
