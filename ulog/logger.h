@@ -61,7 +61,8 @@ class Logger {
   void Sink(LogMsg& msg);
 
   std::string name_;
-  level_enum level_;
+  // level_enum level_;
+  level_t level_;
 
   FormatterPtr formatter_ = nullptr;
   std::vector<SinkPtr> sinks_;
@@ -71,7 +72,7 @@ template <typename It>
 inline Logger::Logger(const std::string& name, const It& begin, const It& end)
     : name_(name), sinks_(begin, end) {
   formatter_ = std::make_shared<PatternFormatter>("%+");
-  level_ = level_enum::info;
+  level_ = static_cast<int>(level_enum::info);
 }
 
 template <typename... Args>

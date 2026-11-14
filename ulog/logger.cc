@@ -16,10 +16,15 @@ Logger::Logger(const std::string& name, SinksInitList sinks)
 
 const std::string& Logger::name() const { return name_; }
 
-level_enum Logger::level() const { return level_; };
-void Logger::set_level(level_enum lvl) { level_ = lvl; }
+level_enum Logger::level() const {
+  return static_cast<level_enum>(level_.load(std::memory_order_relaxed));
+};
 
-bool Logger::ShouldLog(level_enum lvl) const { return lvl >= level_; }
+void Logger::set_level(level_enum lvl) { level_.store(static_cast<int>(lvl)); }
+
+bool Logger::ShouldLog(level_enum lvl) const {
+  return lvl >= static_cast<level_enum>(level_.load(std::memory_order_relaxed));
+}
 
 void Logger::SetPattern(const std::string& pattern) {
   formatter_ = std::make_shared<PatternFormatter>(pattern);
