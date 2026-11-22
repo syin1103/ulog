@@ -4,7 +4,7 @@
 #ifndef ULOG_SINKS_BASE_SINK_H_
 #define ULOG_SINKS_BASE_SINK_H_
 
-#include <mutex>
+#include "ulog/sinks/sink.h"
 
 namespace ulog {
 namespace sinks {
@@ -20,7 +20,6 @@ class BaseSink : public Sink {
     SinkIt(msg);
   }
 
-  //  protected:
  private:
   virtual void SinkIt(const LogMsg& msg) = 0;
   Mutex mutex_;
