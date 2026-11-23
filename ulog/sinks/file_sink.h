@@ -6,6 +6,7 @@
 
 #include <cassert>
 #include <cstdio>
+#include <mutex>
 #include <string>
 
 #include "ulog/sinks/base_sink.h"
@@ -33,6 +34,9 @@ class FileSink : public BaseSink<Mutex> {
   std::string filename_;
   FILE* file_ = nullptr;
 };
+
+using FileSinkSt = FileSink<details::null_mutex>;
+using FileSinkMt = FileSink<std::mutex>;
 
 template <typename Mutex>
 inline FileSink<Mutex>::FileSink(const std::string& filename)

@@ -6,6 +6,7 @@
 
 #include <cstdio>
 #include <memory>
+#include <mutex>
 
 #include "ulog/sinks/base_sink.h"
 
@@ -35,6 +36,9 @@ class StdoutSink : public BaseSink<Mutex> {
   }
 };
 
+using StdoutSinkSt = StdoutSink<details::null_mutex>;
+using StdoutSinkMt = StdoutSink<std::mutex>;
+
 template <typename Mutex>
 class StderrSink : public BaseSink<Mutex> {
   using SelfPtr = std::shared_ptr<StderrSink<Mutex>>;
@@ -57,6 +61,9 @@ class StderrSink : public BaseSink<Mutex> {
     std::fflush(stderr);
   }
 };
+
+using StderrSinkSt = StderrSink<details::null_mutex>;
+using StderrSinkMt = StderrSink<std::mutex>;
 
 }  // namespace sinks
 }  // namespace ulog
