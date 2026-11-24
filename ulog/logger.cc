@@ -31,6 +31,7 @@ void Logger::SetPattern(const std::string& pattern) {
 }
 
 void Logger::set_formatter(FormatterPtr formatter) { formatter_ = formatter; }
+FormatterPtr Logger::formatter() const { return formatter_; }
 
 void Logger::Flush() {
   for (auto& sink : sinks_) {

@@ -49,6 +49,7 @@ class Logger {
 
   void SetPattern(const std::string& pattern);
   void set_formatter(FormatterPtr formatter);
+  FormatterPtr formatter() const;
 
   void Flush();
 

@@ -24,36 +24,47 @@ class RegistryT {
   }
 
   void Register(std::shared_ptr<Logger> logger) {
+    std::lock_guard<Mutex> lock_(mutex_);
     ThrowIfExists(logger->name());
     loggers_[logger->name()] = logger;
   }
 
   std::shared_ptr<Logger> Get(const std::string& name) {
+    std::lock_guard<Mutex> lock_(mutex_);
     auto it = loggers_.find(name);
     return it != loggers_.end() ? it->second : nullptr;
   }
 
-  void Drop(const std::string& name) { loggers_.erase(name); }
-  void DropAll() { loggers_.clear(); }
+  void Drop(const std::string& name) {
+    std::lock_guard<Mutex> lock_(mutex_);
+    loggers_.erase(name);
+  }
+  void DropAll() {
+    std::lock_guard<Mutex> lock_(mutex_);
+    loggers_.clear();
+  }
 
   void set_formatter(FormatterPtr formatter) {
+    std::lock_guard<Mutex> lock_(mutex_);
     formatter_ = formatter;
-    for (auto& logger : loggers_) {
-      logger->set_formatter(formatter_);
+    for (auto& item : loggers_) {
+      item.second->set_formatter(formatter_);
     }
   }
 
   void set_pattern(const std::string& pattern) {
+    std::lock_guard<Mutex> lock_(mutex_);
     formatter_ = std::make_shared<PatternFormatter>(pattern);
-    for (auto& logger : loggers_) {
-      logger->set_formatter(formatter_);
+    for (auto& item : loggers_) {
+      item.second->set_formatter(formatter_);
     }
   }
 
   void set_level(level_enum level) {
+    std::lock_guard<Mutex> lock_(mutex_);
     level_ = level;
-    for (auto& logger : loggers_) {
-      logger->set_level(level_);
+    for (auto& item : loggers_) {
+      item.second->set_level(level_);
     }
   }
 
