@@ -23,22 +23,51 @@ class RegistryT {
     return instance;
   }
 
-  void Register(std::shared_ptr<Logger> logger) {}
-  std::shared_ptr<Logger> Get(const std::string& name) { return nullptr; }
+  void Register(std::shared_ptr<Logger> logger) {
+    ThrowIfExists(logger->name());
+    loggers_[logger->name()] = logger;
+  }
 
-  void Drop(const std::string& name) {}
-  void DropAll() {}
+  std::shared_ptr<Logger> Get(const std::string& name) {
+    auto it = loggers_.find(name);
+    return it != loggers_.end() ? it->second : nullptr;
+  }
 
-  void set_formatter(FormatterPtr formatter) {}
-  void set_pattern(const std::string& pattern) {}
-  void set_level(level_enum level) {}
+  void Drop(const std::string& name) { loggers_.erase(name); }
+  void DropAll() { loggers_.clear(); }
+
+  void set_formatter(FormatterPtr formatter) {
+    formatter_ = formatter;
+    for (auto& logger : loggers_) {
+      logger->set_formatter(formatter_);
+    }
+  }
+
+  void set_pattern(const std::string& pattern) {
+    formatter_ = std::make_shared<PatternFormatter>(pattern);
+    for (auto& logger : loggers_) {
+      logger->set_formatter(formatter_);
+    }
+  }
+
+  void set_level(level_enum level) {
+    level_ = level;
+    for (auto& logger : loggers_) {
+      logger->set_level(level_);
+    }
+  }
 
  private:
   RegistryT<Mutex>(){};
   RegistryT<Mutex>(const RegistryT<Mutex>&) = delete;
   RegistryT<Mutex>& operator=(const RegistryT<Mutex>&) = delete;
 
-  void ThrowIfExists(const std::string& name) {}
+  void ThrowIfExists(const std::string& name) {
+    auto it = loggers_.find(name);
+    if (it != loggers_.end()) {
+      throw std::runtime_error("Logger already exists");
+    }
+  }
 
   Mutex mutex_;
   level_enum level_;
