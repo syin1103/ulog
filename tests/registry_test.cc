@@ -10,14 +10,9 @@
 
 #include "ulog/common.h"
 #include "ulog/pattern_formatter.h"
+#include "ulog/sinks/test_sink.h"
 
 using namespace ulog;
-
-// TEST(RegistryTest, InstanceSingleton) {
-//   auto& registry1 = ulog::Registry::Instance();
-//   auto& registry2 = ulog::Registry::Instance();
-//   EXPECT_EQ(&registry1, &registry2);
-// }
 
 class RegistryTest : public ::testing::Test {
  protected:
@@ -30,6 +25,8 @@ class RegistryTest : public ::testing::Test {
   std::shared_ptr<Logger> CreateLogger(const std::string& name) {
     return std::make_shared<Logger>(name);
   }
+
+  SinkPtr CreateTestSink() { return std::make_shared<sinks::TestSink>(); }
 };
 
 TEST_F(RegistryTest, RegisterAndGet) {
@@ -96,4 +93,38 @@ TEST_F(RegistryTest, SetFormatter) {
 
   EXPECT_EQ(logger1->formatter(), formatter);
   EXPECT_EQ(logger2->formatter(), formatter);
+}
+
+TEST_F(RegistryTest, CreateWithSingleSink) {
+  auto formatter = std::make_shared<ulog::PatternFormatter>("[%l] %v");
+  registry.set_formatter(formatter);
+  registry.set_level(level_enum::debug);
+
+  auto sink = CreateTestSink();
+  auto logger = registry.Create("test_logger", sink);
+
+  ASSERT_NE(logger, nullptr);
+  EXPECT_EQ(logger->name(), "test_logger");
+  EXPECT_EQ(registry.Get("test_logger"), logger);
+  EXPECT_EQ(logger->level(), level_enum::debug);
+  EXPECT_EQ(logger->formatter(), formatter);
+}
+
+TEST_F(RegistryTest, CreateWithSinkInitList) {
+  auto sink1 = CreateTestSink();
+  auto sink2 = CreateTestSink();
+  auto logger = registry.Create("test_logger", {sink1, sink2});
+
+  ASSERT_NE(logger, nullptr);
+  EXPECT_EQ(logger->name(), "test_logger");
+  EXPECT_EQ(registry.Get("test_logger"), logger);
+}
+
+TEST_F(RegistryTest, CreateWithIteratorRange) {
+  SinksInitList sinks{CreateTestSink(), CreateTestSink()};
+  auto logger = registry.Create("test_logger", sinks.begin(), sinks.end());
+
+  ASSERT_NE(logger, nullptr);
+  EXPECT_EQ(logger->name(), "test_logger");
+  EXPECT_EQ(registry.Get("test_logger"), logger);
 }

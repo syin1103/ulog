@@ -23,6 +23,28 @@ class RegistryT {
     return instance;
   }
 
+  template <typename It>
+  std::shared_ptr<Logger> Create(const std::string& name, const It& begin,
+                                 const It& end) {
+    std::lock_guard<Mutex> lock(mutex_);
+    ThrowIfExists(name);
+    auto logger = std::make_shared<Logger>(name, begin, end);
+    if (formatter_) {
+      logger->set_formatter(formatter_);
+    }
+    logger->set_level(level_);
+    loggers_[name] = logger;
+    return logger;
+  }
+
+  std::shared_ptr<Logger> Create(const std::string& name, SinksInitList sinks) {
+    return Create(name, sinks.begin(), sinks.end());
+  }
+
+  std::shared_ptr<Logger> Create(const std::string& name, SinkPtr sink) {
+    return Create(name, {sink});
+  }
+
   void Register(std::shared_ptr<Logger> logger) {
     std::lock_guard<Mutex> lock_(mutex_);
     ThrowIfExists(logger->name());

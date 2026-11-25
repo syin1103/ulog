@@ -62,7 +62,6 @@ class Logger {
   void Sink(LogMsg& msg);
 
   std::string name_;
-  // level_enum level_;
   level_t level_;
 
   FormatterPtr formatter_ = nullptr;
