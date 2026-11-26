@@ -5,6 +5,8 @@
 
 #include <iostream>
 
+#include "ulog/ulog.h"
+
 int main() {
   std::string message = fmt::format("Hello {}, number = {}", "ulog", 42);
   std::cout << message << '\n';
