@@ -9,6 +9,7 @@
 
 #include "ulog/common.h"
 #include "ulog/logger.h"
+#include "ulog/sinks/sink.h"
 
 namespace ulog {
 
@@ -17,6 +18,16 @@ std::shared_ptr<Logger> GetLogger(const std::string& name);
 void SetPattern(const std::string& pattern);
 void SetFormatter(FormatterPtr formatter);
 void SetLevel(level_enum level);
+
+std::shared_ptr<Logger> Create(const std::string& name, SinkPtr sink);
+std::shared_ptr<Logger> Create(const std::string& name, SinksInitList sinks);
+
+template <typename It>
+std::shared_ptr<Logger> Create(const std::string& name, const It& begin,
+                               const It& end);
+
+template <typename Sink, typename... Args>
+std::shared_ptr<Logger> Create(const std::string& name, Args&&... args);
 
 std::shared_ptr<Logger> BasicLoggerMt(const std::string& logger_name,
                                       const std::string& filename);

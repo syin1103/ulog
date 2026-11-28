@@ -25,6 +25,50 @@ void RegisterLogger(std::shared_ptr<Logger> logger) {
   Registry::Instance().Register(logger);
 }
 
+std::shared_ptr<Logger> Create(const std::string& name, SinkPtr sink) {
+  return nullptr;
+}
+
+std::shared_ptr<Logger> Create(const std::string& name, SinksInitList sinks) {
+  return nullptr;
+}
+
+template <typename It>
+std::shared_ptr<Logger> Create(const std::string& name, const It& begin,
+                               const It& end) {
+  return nullptr;
+}
+
+template <typename Sink, typename... Args>
+std::shared_ptr<Logger> Create(const std::string& name, Args&&... args) {
+  return nullptr;
+}
+
+std::shared_ptr<Logger> BasicLoggerMt(const std::string& logger_name,
+                                      const std::string& filename) {
+  return nullptr;
+}
+
+std::shared_ptr<Logger> BasicLoggerSt(const std::string& logger_name,
+                                      const std::string& filename) {
+  return nullptr;
+}
+
+std::shared_ptr<Logger> StdoutLoggerMt(const std::string& logger_name) {
+  return nullptr;
+}
+
+std::shared_ptr<Logger> StdoutLoggerSt(const std::string& logger_name) {
+  return nullptr;
+}
+
+std::shared_ptr<Logger> StderrLoggerMt(const std::string& logger_name) {
+  return nullptr;
+}
+std::shared_ptr<Logger> StderrLoggerSt(const std::string& logger_name) {
+  return nullptr;
+}
+
 void Drop(const std::string& name) { Registry::Instance().Drop(name); }
 
 void DropAll() { Registry::Instance().DropAll(); }
